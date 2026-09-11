@@ -287,7 +287,28 @@
     display: grid; grid-template-columns: 1.05fr 1fr;
   }
   .modal .m-media { background: var(--hero-bg); position: relative; min-height: 300px; }
-  .modal .m-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .modal .m-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .m-zoom {
+    position: absolute; bottom: 12px; right: 12px; z-index: 2;
+    width: 34px; height: 34px; border-radius: 8px; border: 0;
+    background: rgba(0, 0, 0, .5); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .m-zoom:hover { background: rgba(0, 0, 0, .68); }
+  .lightbox {
+    position: fixed; inset: 0; z-index: 80; background: rgba(5, 6, 8, .92);
+    display: flex; align-items: center; justify-content: center; padding: 5vh 5vw;
+    cursor: zoom-out;
+  }
+  .lightbox[hidden] { display: none; }
+  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; box-shadow: var(--shadow-lift); }
+  .lightbox-close {
+    position: absolute; top: 18px; right: 18px; z-index: 2;
+    width: 40px; height: 40px; border-radius: 999px; border: 0;
+    background: rgba(255, 255, 255, .14); color: #fff; font-size: 1.3rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lightbox-close:hover { background: rgba(255, 255, 255, .24); }
   .modal .m-media svg { width: 100%; height: 100%; display: block; }
   .modal .m-body { padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 84vh; }
   .m-close {
@@ -447,6 +468,11 @@
 
 <div class="backdrop" id="backdrop" hidden>
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Bild vergrössert">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Schliessen">×</button>
+  <img id="lightboxImg" src="" alt="" />
 </div>
 
 <script>
@@ -796,6 +822,9 @@ function openModal(id) {
     <div class="m-media">
       <button class="m-close" id="mClose" aria-label="Schliessen">×</button>
       ${mediaHTML(it, true)}
+      ${(IMAGES[it.img] && state.cat === "felgen") ? `<button class="m-zoom" id="mZoom" aria-label="Bild vergrössern">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
+      </button>` : ""}
     </div>
     <div class="m-body">
       ${statusPillInline(it)}
@@ -824,6 +853,13 @@ function openModal(id) {
   document.body.style.overflow = "hidden";
   document.getElementById("mClose").addEventListener("click", closeModal);
   document.getElementById("mClose").focus();
+  const mImg = document.querySelector("#modal .m-media img");
+  const mZoom = document.getElementById("mZoom");
+  if (mImg && IMAGES[it.img] && state.cat === "felgen") {
+    mImg.style.cursor = "zoom-in";
+    mImg.addEventListener("click", () => openLightbox(IMAGES[it.img], it.title));
+    if (mZoom) mZoom.addEventListener("click", () => openLightbox(IMAGES[it.img], it.title));
+  }
 }
 function statusPillInline(it) { return ""; }
 function closeModal() {
@@ -834,8 +870,24 @@ function closeModal() {
 document.getElementById("backdrop").addEventListener("click", e => {
   if (e.target.id === "backdrop") closeModal();
 });
+
+/* ---------- Lightbox (Bild-Zoom) ---------- */
+function openLightbox(src, alt) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightboxImg").alt = alt || "";
+  document.getElementById("lightbox").hidden = false;
+}
+function closeLightbox() {
+  document.getElementById("lightbox").hidden = true;
+  document.getElementById("lightboxImg").src = "";
+}
+document.getElementById("lightbox").addEventListener("click", closeLightbox);
+document.getElementById("lightboxClose").addEventListener("click", e => { e.stopPropagation(); closeLightbox(); });
+
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && !document.getElementById("backdrop").hidden) closeModal();
+  if (e.key !== "Escape") return;
+  if (!document.getElementById("lightbox").hidden) { closeLightbox(); return; }
+  if (!document.getElementById("backdrop").hidden) closeModal();
 });
 
 /* ---------- Tabs / wiring ---------- */
