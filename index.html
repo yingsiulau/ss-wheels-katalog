@@ -283,11 +283,11 @@
   .backdrop[hidden] { display: none; }
   .modal {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    max-width: 860px; width: 100%; box-shadow: var(--shadow-lift); overflow: hidden;
-    display: grid; grid-template-columns: 1.05fr 1fr; align-items: start;
+    max-width: 900px; width: 100%; box-shadow: var(--shadow-lift); overflow: hidden;
+    display: flex; align-items: stretch;
   }
-  .modal .m-media { background: var(--hero-bg); position: relative; aspect-ratio: 1 / 1; }
-  .modal .m-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .modal .m-media { background: var(--hero-bg); position: relative; aspect-ratio: 1 / 1; flex: none; }
+  .modal .m-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .m-zoom {
     position: absolute; bottom: 12px; right: 12px; z-index: 2;
     width: 34px; height: 34px; border-radius: 8px; border: 0;
@@ -309,8 +309,8 @@
     display: flex; align-items: center; justify-content: center;
   }
   .lightbox-close:hover { background: rgba(255, 255, 255, .24); }
-  .modal .m-media svg { width: 100%; height: 100%; display: block; }
-  .modal .m-body { padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 84vh; }
+  .modal .m-media svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .modal .m-body { flex: 1; min-width: 0; padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 84vh; }
   .m-close {
     position: absolute; top: 12px; right: 12px; z-index: 2;
     width: 34px; height: 34px; border-radius: 8px; border: 0;
@@ -362,8 +362,8 @@
 
   @media (max-width: 620px) {
     .backdrop { padding: 0; align-items: flex-start; }
-    .modal { grid-template-columns: 1fr; border-radius: 0; max-width: none; min-height: 100%; }
-    .modal .m-media { aspect-ratio: 1 / 1; flex: none; }
+    .modal { flex-direction: column; border-radius: 0; max-width: none; min-height: 100%; }
+    .modal .m-media { aspect-ratio: 1 / 1; flex: none; max-width: none; }
     .modal .m-body { max-height: none; overflow-y: visible; }
     .hero-stats { gap: 20px; }
   }
@@ -790,6 +790,20 @@ function resetFilters() {
 
 /* ---------- Modal ---------- */
 let lastFocus = null;
+/* Bildspalte so hoch wie die Textspalte machen (quadratisch, ohne Balken).
+   Läuft nur am Desktop-Layout (>620px) — mobil ist das Bild ohnehin
+   volle Breite/quadratisch per CSS (aspect-ratio). */
+function sizeModalMedia() {
+  const media = document.querySelector("#modal .m-media");
+  const body = document.querySelector("#modal .m-body");
+  const modal = document.getElementById("modal");
+  if (!media || !body || !modal) return;
+  if (!window.matchMedia("(min-width: 621px)").matches) { media.style.width = ""; return; }
+  const bodyH = body.getBoundingClientRect().height;
+  const modalW = modal.getBoundingClientRect().width;
+  const w = Math.max(260, Math.min(bodyH, modalW * 0.55));
+  media.style.width = w + "px";
+}
 function openModal(id) {
   const it = (state.cat === "felgen" ? WHEELS : CARS).find(x => x.id === id);
   if (!it) return;
@@ -853,6 +867,14 @@ function openModal(id) {
   document.body.style.overflow = "hidden";
   document.getElementById("mClose").addEventListener("click", closeModal);
   document.getElementById("mClose").focus();
+  sizeModalMedia();
+  // Web-Fonts laden asynchron nach; Text kann dadurch nach der ersten
+  // Messung noch umbrechen. Sobald sie bereit sind, einmal neu vermessen.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      if (!document.getElementById("backdrop").hidden) sizeModalMedia();
+    });
+  }
   const mImg = document.querySelector("#modal .m-media img");
   const mZoom = document.getElementById("mZoom");
   if (mImg && IMAGES[it.img] && state.cat === "felgen") {
