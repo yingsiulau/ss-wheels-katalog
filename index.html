@@ -176,12 +176,24 @@
   .toolbar .count { font-size: .86rem; color: var(--ink-2); }
   .toolbar .count b { color: var(--ink); font-variant-numeric: tabular-nums; }
   .toolbar-spacer { flex: 1; }
-  select.sort, .filter-toggle {
+  .filter-toggle {
     font: inherit; font-size: .85rem; color: var(--ink);
     background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
     padding: 8px 12px;
   }
   .filter-toggle { display: none; align-items: center; gap: 8px; font-weight: 600; }
+  .sort-control {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent); border-radius: 6px;
+  }
+  .sort-control svg { width: 16px; height: 16px; flex: none; }
+  select.sort {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    font: inherit; font-size: .85rem; font-weight: 600; color: var(--accent);
+    background: transparent; border: 0; padding: 2px 0; margin: 0; cursor: pointer;
+  }
+  select.sort:hover { color: var(--accent-hover); }
+  select.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   .filter-toggle .badge {
     background: var(--accent); color: #fff; border-radius: 20px; font-size: .68rem;
     padding: 1px 7px; font-family: "IBM Plex Mono", monospace;
@@ -411,11 +423,14 @@
     <span class="count">Zeigt <b id="resCount">0</b> <span id="resWord">Artikel</span></span>
     <span class="toolbar-spacer"></span>
     <button class="filter-toggle" id="filterToggle">Filter <span class="badge" id="filterBadge" hidden>0</span></button>
-    <select class="sort" id="sortSel" aria-label="Sortierung">
-      <option value="new">Neuste zuerst</option>
-      <option value="old">Älteste zuerst</option>
-      <option value="name">Name A–Z</option>
-    </select>
+    <label class="sort-control">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16"/><path d="M4 7l3-3 3 3"/><path d="M17 20V4"/><path d="M14 17l3 3 3-3"/></svg>
+      <select class="sort" id="sortSel" aria-label="Sortierung">
+        <option value="new">Neuste zuerst</option>
+        <option value="old">Älteste zuerst</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </label>
   </div>
 </div>
 
