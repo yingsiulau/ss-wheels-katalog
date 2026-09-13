@@ -23,9 +23,9 @@ keine Abhängigkeiten. Die Bilder sind direkt in die Datei eingebettet
 
 | Was | Wo |
 |-----|-----|
-| Felgen | Array `WHEELS` – ein `{ … }` pro Felge/Satz |
+| Felgen | Array `WHEELS` – ein `{ … }` pro Felge/Satz. Felder `price` (Zahl oder `null` = „Preis auf Anfrage"), `condition` (Zustand), `link` (Instagram-Post) und `fbLink` (Facebook-Marketplace-Inserat) sind alle optional – leer lassen, was nicht zutrifft. |
 | Occasionen (Autos) | Array `CARS` |
-| Kontakt / WhatsApp-Nummer | Objekt `SHOP` (`whatsapp: "41791234567"` eintragen → „Anfragen"-Button geht direkt zu WhatsApp) |
+| Kontakt / WhatsApp-Nummer | Objekt `SHOP` (`whatsapp: "41791234567"` eintragen → „Anfragen"-Button geht direkt zu WhatsApp; `facebook` verlinkt im Footer auf den Marketplace-Shop) |
 | Bilder | Objekt `IMAGES` – Schlüssel = `img`-Feld des Inserats. Wert: `"data:image/jpeg;base64,…"` **oder** eine normale Bild-URL (`"https://…"`). Ohne Treffer wird eine Felgen-/Auto-Illustration gezeichnet. |
 
 Ein Feld leer lassen (`""` bzw. `[]`), wenn eine Angabe fehlt – die Zeile wird
@@ -43,7 +43,8 @@ GitHub Pages veröffentlicht die Änderung automatisch in ein bis zwei Minuten.
 
 ## Hinweis zu den Daten
 
-Fotos und Beschreibungen stammen aus dem öffentlichen Instagram-Profil von
-SS Wheels. Bei den Occasionen zeigt die Karte das Titelbild der Story-Highlight;
+Fotos und Beschreibungen stammen aus dem öffentlichen Instagram-Profil sowie dem
+Facebook-Marketplace-Shop von SS Wheels (echte Preise und Zustand der aktiven
+Inserate). Bei den Occasionen zeigt die Karte das Titelbild der Story-Highlight;
 Jahrgang, Kilometer und Preis stehen in der jeweiligen Story bzw. auf Anfrage.
 Alle Angaben ohne Gewähr.
