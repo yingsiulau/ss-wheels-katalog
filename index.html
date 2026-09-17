@@ -362,6 +362,46 @@
   .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--ink); }
   .btn-ghost:hover { background: var(--surface-2); }
 
+  .sell-cta {
+    margin-top: 18px; cursor: pointer;
+  }
+  .sell-cta svg { width: 15px; height: 15px; }
+
+  .sell-modal { display: block; max-width: 640px; }
+  .sell-body { padding: 26px 26px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; max-height: 88vh; }
+  .sell-body h2 { font-size: 1.3rem; font-weight: 800; }
+  .sell-intro { font-size: .86rem; color: var(--ink-2); margin-top: -8px; }
+  .field { display: flex; flex-direction: column; gap: 6px; font-size: .84rem; color: var(--ink-2); }
+  .field > span { font-weight: 600; color: var(--ink); }
+  .field input[type="text"], .field textarea {
+    font: inherit; font-size: .9rem; color: var(--ink); background: var(--surface-2);
+    border: 1px solid var(--border-strong); border-radius: 9px; padding: 10px 12px; width: 100%;
+  }
+  .field input[type="text"]:focus, .field textarea:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 31, 38, .18);
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field-row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .upload-zone {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+    border: 1.5px dashed var(--border-strong); border-radius: 10px; padding: 22px 16px;
+    color: var(--ink-2); font-size: .84rem; cursor: pointer; background: var(--surface-2);
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); color: var(--ink); }
+  .upload-zone svg { width: 22px; height: 22px; color: var(--accent); }
+  .upload-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 10px;
+  }
+  .upload-grid:empty { display: none; }
+  .thumb { position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb button {
+    position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 999px; border: 0;
+    background: rgba(0, 0, 0, .6); color: #fff; font-size: .8rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .upload-hint { font-size: .76rem; color: var(--ink-3); margin: 0; }
+  .sell-note { font-size: .8rem; color: var(--accent); font-weight: 600; margin: 0; }
+
   footer.foot {
     border-top: 1px solid var(--border); background: var(--surface);
     padding: 30px 0 40px; color: var(--ink-2); font-size: .84rem;
@@ -430,6 +470,10 @@
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fahrwerktuning</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Auto An-Verkauf</li>
       </ul>
+      <button class="btn btn-primary sell-cta" id="sellCtaBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Auto inserieren
+      </button>
     </div>
     <div class="hero-stats" id="heroStats"></div>
   </div>
@@ -507,6 +551,59 @@
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Bild vergrössert">
   <button class="lightbox-close" id="lightboxClose" aria-label="Schliessen">×</button>
   <img id="lightboxImg" src="" alt="" />
+</div>
+
+<div class="backdrop" id="sellBackdrop" hidden>
+  <div class="modal sell-modal" role="dialog" aria-modal="true" aria-labelledby="sellTitle">
+    <button class="m-close" id="sellClose" aria-label="Schliessen">×</button>
+    <form class="sell-body" id="sellForm" novalidate>
+      <h2 id="sellTitle">Auto inserieren</h2>
+      <p class="sell-intro">Verkaufe dein Auto über SS Wheels — fülle das Formular aus, wir melden uns bei dir.</p>
+
+      <label class="field">
+        <span>Marke / Modell *</span>
+        <input type="text" id="sellBrandModel" required placeholder="z. B. BMW 320d Touring" />
+      </label>
+
+      <div class="field-row two">
+        <label class="field">
+          <span>Jahrgang *</span>
+          <input type="text" inputmode="numeric" id="sellYear" required placeholder="z. B. 2015" />
+        </label>
+        <label class="field">
+          <span>Kilometerstand *</span>
+          <input type="text" inputmode="numeric" id="sellKm" required placeholder="z. B. 98'000 km" />
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Letzte Prüfung (MFK)</span>
+        <input type="text" id="sellMfk" placeholder="z. B. 03/2027 oder unbekannt" />
+      </label>
+
+      <label class="field">
+        <span>Bemerkungen</span>
+        <textarea id="sellNotes" rows="4" placeholder="Zustand, Ausstattung, Unfallfreiheit, Preisvorstellung …"></textarea>
+      </label>
+
+      <div class="field">
+        <span>Fotos (max. 10)</span>
+        <label class="upload-zone" id="uploadZone">
+          <input type="file" id="sellPhotos" accept="image/*" multiple hidden />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+          <span>Bilder auswählen oder hierher ziehen</span>
+        </label>
+        <div class="upload-grid" id="uploadGrid"></div>
+        <p class="upload-hint" id="uploadCount"></p>
+        <p class="upload-hint">Die Fotos werden hier nur ausgewählt und angezeigt, nicht automatisch hochgeladen — bitte im geöffneten E-Mail-Entwurf manuell anhängen, bevor du sendest.</p>
+      </div>
+
+      <div class="m-actions">
+        <button type="submit" class="btn btn-primary">Per E-Mail senden</button>
+        <a class="btn btn-ghost" id="sellIgLink" target="_blank" rel="noopener">Lieber per Instagram-DM</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -955,9 +1052,100 @@ function closeLightbox() {
 document.getElementById("lightbox").addEventListener("click", closeLightbox);
 document.getElementById("lightboxClose").addEventListener("click", e => { e.stopPropagation(); closeLightbox(); });
 
+/* ---------- Auto-Verkaufsformular ---------- */
+let sellPhotoFiles = [];
+let sellLastFocus = null;
+
+function renderSellPhotos() {
+  const grid = document.getElementById("uploadGrid");
+  grid.innerHTML = sellPhotoFiles.map((file, i) => `
+    <div class="thumb">
+      <img src="${URL.createObjectURL(file)}" alt="" />
+      <button type="button" data-i="${i}" aria-label="Entfernen">×</button>
+    </div>`).join("");
+  grid.querySelectorAll("button[data-i]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      sellPhotoFiles.splice(Number(btn.dataset.i), 1);
+      renderSellPhotos();
+    });
+  });
+  const countEl = document.getElementById("uploadCount");
+  countEl.textContent = sellPhotoFiles.length
+    ? `${sellPhotoFiles.length} von 10 Fotos ausgewählt`
+    : "";
+}
+
+function addSellPhotos(fileList) {
+  const incoming = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+  const room = 10 - sellPhotoFiles.length;
+  sellPhotoFiles = sellPhotoFiles.concat(incoming.slice(0, room));
+  renderSellPhotos();
+}
+
+document.getElementById("sellPhotos").addEventListener("change", e => {
+  addSellPhotos(e.target.files);
+  e.target.value = "";
+});
+
+const uploadZone = document.getElementById("uploadZone");
+uploadZone.addEventListener("click", e => { e.preventDefault(); document.getElementById("sellPhotos").click(); });
+uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("drag"); });
+uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag"));
+uploadZone.addEventListener("drop", e => {
+  e.preventDefault();
+  uploadZone.classList.remove("drag");
+  addSellPhotos(e.dataTransfer.files);
+});
+
+function openSellForm() {
+  sellLastFocus = document.activeElement;
+  document.getElementById("sellBackdrop").hidden = false;
+  document.body.style.overflow = "hidden";
+  document.getElementById("sellBrandModel").focus();
+}
+function closeSellForm() {
+  document.getElementById("sellBackdrop").hidden = true;
+  document.body.style.overflow = "";
+  if (sellLastFocus) sellLastFocus.focus();
+}
+document.getElementById("sellCtaBtn").addEventListener("click", openSellForm);
+document.getElementById("sellClose").addEventListener("click", closeSellForm);
+document.getElementById("sellBackdrop").addEventListener("click", e => {
+  if (e.target.id === "sellBackdrop") closeSellForm();
+});
+document.getElementById("sellIgLink").href = SHOP.instagram;
+
+document.getElementById("sellForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const brandModel = document.getElementById("sellBrandModel").value.trim();
+  const year = document.getElementById("sellYear").value.trim();
+  const km = document.getElementById("sellKm").value.trim();
+  const mfk = document.getElementById("sellMfk").value.trim();
+  const notes = document.getElementById("sellNotes").value.trim();
+  if (!brandModel || !year || !km) {
+    e.target.reportValidity();
+    return;
+  }
+  const lines = [
+    `Marke / Modell: ${brandModel}`,
+    `Jahrgang: ${year}`,
+    `Kilometerstand: ${km}`,
+    `Letzte Prüfung (MFK): ${mfk || "–"}`,
+    `Bemerkungen: ${notes || "–"}`,
+    "",
+    sellPhotoFiles.length
+      ? `Fotos (${sellPhotoFiles.length}) bitte manuell anhängen: ${sellPhotoFiles.map(f => f.name).join(", ")}`
+      : "Keine Fotos ausgewählt.",
+  ];
+  const subject = `Auto-Inserat: ${brandModel}`;
+  const body = lines.join("\n");
+  window.location.href = `mailto:${SHOP.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!document.getElementById("lightbox").hidden) { closeLightbox(); return; }
+  if (!document.getElementById("sellBackdrop").hidden) { closeSellForm(); return; }
   if (!document.getElementById("backdrop").hidden) closeModal();
 });
 
