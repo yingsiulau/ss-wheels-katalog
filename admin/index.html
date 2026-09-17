@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SS Wheels – Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ic3Bva2UiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjJmM2Y1Ii8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiNjM2M4Y2UiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3ZDgzOGEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9InJpbSIgY3g9IjAuMzUiIGN5PSIwLjMyIiByPSIwLjc1Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZWVmMGYyIi8+PHN0b3Agb2Zmc2V0PSIwLjU1IiBzdG9wLWNvbG9yPSIjYzNjOGNlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjN2Q4MzhhIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHBhdGggaWQ9ImFyY1RvcCIgZD0iTSAzMCAxMDAgQSA3MCA3MCAwIDAgMSAxNzAgMTAwIi8+CiAgPC9kZWZzPgoKICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9Ijk3IiBmaWxsPSIjMGMwYzBkIi8+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5MiIgZmlsbD0iI2ZkZmRmZCIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iOTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzBjMGMwZCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYWFiMGI3IiBzdHJva2Utd2lkdGg9IjUiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgyIiBmaWxsPSJub25lIiBzdHJva2U9IiMwYzBjMGQiIHN0cm9rZS13aWR0aD0iMiIvPgoKICA8dGV4dCBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjgwMCIgZm9udC1zaXplPSIyMiIgbGV0dGVyLXNwYWNpbmc9IjEiIGZpbGw9IiMwYzBjMGQiPgogICAgPHRleHRQYXRoIGhyZWY9IiNhcmNUb3AiIHN0YXJ0T2Zmc2V0PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNTIFdIRUVMUzwvdGV4dFBhdGg+CiAgPC90ZXh0PgoKICA8cGF0aCBkPSJNIDI0LjUgNzYgQSA4MiA4MiAwIDAgMSAzMC42IDU4IiBmaWxsPSJub25lIiBzdHJva2U9IiMwYzBjMGQiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtZGFzaGFycmF5PSI0IDQuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTSAxNzUuNSA3NiBBIDgyIDgyIDAgMCAwIDE2OS40IDU4IiBmaWxsPSJub25lIiBzdHJva2U9IiMwYzBjMGQiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtZGFzaGFycmF5PSI0IDQuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTSAzMyAxNTIgQSA4MiA4MiAwIDAgMCAyNSAxMzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzBjMGMwZCIgc3Ryb2tlLXdpZHRoPSIyLjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQgNC41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNIDE2NyAxNTIgQSA4MiA4MiAwIDAgMSAxNzUgMTMyIiBmaWxsPSJub25lIiBzdHJva2U9IiMwYzBjMGQiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtZGFzaGFycmF5PSI0IDQuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxwYXRoIGQ9Ik0gMjAgOTEgTCAyMi4xMiA5Ny4wOSBMIDI4LjU2IDk3LjIyIEwgMjMuNDIgMTAxLjExIEwgMjUuMjkgMTA3LjI4IEwgMjAgMTAzLjYgTCAxNC43MSAxMDcuMjggTCAxNi41OCAxMDEuMTEgTCAxMS40NCA5Ny4yMiBMIDE3Ljg4IDk3LjA5IFoiIGZpbGw9IiMwYzBjMGQiLz4KICA8cGF0aCBkPSJNIDE4MCA5MSBMIDE4Mi4xMiA5Ny4wOSBMIDE4OC41NiA5Ny4yMiBMIDE4My40MiAxMDEuMTEgTCAxODUuMjkgMTA3LjI4IEwgMTgwIDEwMy42IEwgMTc0LjcxIDEwNy4yOCBMIDE3Ni41OCAxMDEuMTEgTCAxNzEuNDQgOTcuMjIgTCAxNzcuODggOTcuMDkgWiIgZmlsbD0iIzBjMGMwZCIvPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjExNiIgcj0iNTgiIGZpbGw9IiMxMDExMTMiLz4KICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjExNiIgcj0iNTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhkOTM5YSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjg1Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMTYiIHI9IjUwIiBmaWxsPSJ1cmwoI3JpbSkiLz4KICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjExNiIgcj0iNDMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1ZjZmNyIgc3Ryb2tlLXdpZHRoPSIxLjQiIG9wYWNpdHk9IjAuNyIvPgogICAgPGc+CiAgICAgIDxyZWN0IHg9Ijk2LjMiIHk9IjcyIiB3aWR0aD0iNy40IiBoZWlnaHQ9IjI5IiByeD0iMyIgZmlsbD0idXJsKCNzcG9rZSkiIHRyYW5zZm9ybT0icm90YXRlKDAgMTAwIDExNikiLz4KICAgICAgPHJlY3QgeD0iOTYuMyIgeT0iNzIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjkiIHJ4PSIzIiBmaWxsPSJ1cmwoI3Nwb2tlKSIgdHJhbnNmb3JtPSJyb3RhdGUoMzYgMTAwIDExNikiLz4KICAgICAgPHJlY3QgeD0iOTYuMyIgeT0iNzIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjkiIHJ4PSIzIiBmaWxsPSJ1cmwoI3Nwb2tlKSIgdHJhbnNmb3JtPSJyb3RhdGUoNzIgMTAwIDExNikiLz4KICAgICAgPHJlY3QgeD0iOTYuMyIgeT0iNzIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjkiIHJ4PSIzIiBmaWxsPSJ1cmwoI3Nwb2tlKSIgdHJhbnNmb3JtPSJyb3RhdGUoMTA4IDEwMCAxMTYpIi8+CiAgICAgIDxyZWN0IHg9Ijk2LjMiIHk9IjcyIiB3aWR0aD0iNy40IiBoZWlnaHQ9IjI5IiByeD0iMyIgZmlsbD0idXJsKCNzcG9rZSkiIHRyYW5zZm9ybT0icm90YXRlKDE0NCAxMDAgMTE2KSIvPgogICAgICA8cmVjdCB4PSI5Ni4zIiB5PSI3MiIgd2lkdGg9IjcuNCIgaGVpZ2h0PSIyOSIgcng9IjMiIGZpbGw9InVybCgjc3Bva2UpIiB0cmFuc2Zvcm09InJvdGF0ZSgxODAgMTAwIDExNikiLz4KICAgICAgPHJlY3QgeD0iOTYuMyIgeT0iNzIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjkiIHJ4PSIzIiBmaWxsPSJ1cmwoI3Nwb2tlKSIgdHJhbnNmb3JtPSJyb3RhdGUoMjE2IDEwMCAxMTYpIi8+CiAgICAgIDxyZWN0IHg9Ijk2LjMiIHk9IjcyIiB3aWR0aD0iNy40IiBoZWlnaHQ9IjI5IiByeD0iMyIgZmlsbD0idXJsKCNzcG9rZSkiIHRyYW5zZm9ybT0icm90YXRlKDI1MiAxMDAgMTE2KSIvPgogICAgICA8cmVjdCB4PSI5Ni4zIiB5PSI3MiIgd2lkdGg9IjcuNCIgaGVpZ2h0PSIyOSIgcng9IjMiIGZpbGw9InVybCgjc3Bva2UpIiB0cmFuc2Zvcm09InJvdGF0ZSgyODggMTAwIDExNikiLz4KICAgICAgPHJlY3QgeD0iOTYuMyIgeT0iNzIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjkiIHJ4PSIzIiBmaWxsPSJ1cmwoI3Nwb2tlKSIgdHJhbnNmb3JtPSJyb3RhdGUoMzI0IDEwMCAxMTYpIi8+CiAgICA8L2c+CiAgICA8ZyBmaWxsPSIjOGQ5MzlhIj4KICAgICAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iOTQiIHI9IjIuNyIvPgogICAgICA8Y2lyY2xlIGN4PSIxMjAuOSIgY3k9IjEwNy45IiByPSIyLjciLz4KICAgICAgPGNpcmNsZSBjeD0iMTEzIiBjeT0iMTMxLjgiIHI9IjIuNyIvPgogICAgICA8Y2lyY2xlIGN4PSI4NyIgY3k9IjEzMS44IiByPSIyLjciLz4KICAgICAgPGNpcmNsZSBjeD0iNzkuMSIgY3k9IjEwNy45IiByPSIyLjciLz4KICAgIDwvZz4KICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjExNiIgcj0iMTciIGZpbGw9IiMxMDExMTMiIHN0cm9rZT0iI2RmZTJlNSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTIxLjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iODAwIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZjJmM2Y1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TUzwvdGV4dD4KICA8L2c+Cjwvc3ZnPgo=" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
+
+<style>
+  :root {
+    --bg: #eceef1; --surface: #ffffff; --surface-2: #f4f5f7;
+    --border: #dcdfe4; --border-strong: #c6cbd2;
+    --ink: #1a1d23; --ink-2: #59616c; --ink-3: #868e99;
+    --accent: #d81f26; --accent-hover: #b8161d; --accent-ink: #ffffff;
+    --ok: #2f8f4e; --ok-bg: #e6f3ea;
+    --warn: #b26a12; --warn-bg: #f6ecdd;
+    --info: #2f6f8f; --info-bg: #e4f0f6;
+    --shadow: 0 1px 2px rgba(20,24,31,.06), 0 8px 24px rgba(20,24,31,.06);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1013; --surface: #171a1f; --surface-2: #1e2229;
+      --border: #2b3039; --border-strong: #3a414c;
+      --ink: #e9ebee; --ink-2: #9aa2ad; --ink-3: #6f7883;
+      --accent: #f5352c; --accent-hover: #ff4b42;
+      --ok: #46b56a; --ok-bg: #14301f;
+      --warn: #e0a23c; --warn-bg: #33280f;
+      --info: #5fb2d8; --info-bg: #12262f;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.34);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1013; --surface: #171a1f; --surface-2: #1e2229;
+    --border: #2b3039; --border-strong: #3a414c;
+    --ink: #e9ebee; --ink-2: #9aa2ad; --ink-3: #6f7883;
+    --accent: #f5352c; --accent-hover: #ff4b42;
+    --ok: #46b56a; --ok-bg: #14301f;
+    --warn: #e0a23c; --warn-bg: #33280f;
+    --info: #5fb2d8; --info-bg: #12262f;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.34);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: "Archivo", system-ui, sans-serif; margin: 0; }
+  a { color: inherit; }
+  button { font: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .top-inner { display: flex; align-items: center; gap: 14px; height: 62px; }
+  .brand { display: flex; align-items: baseline; gap: 9px; text-decoration: none; }
+  .brand .mark { font-family: "Archivo", sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--ink); }
+  .brand .mark b { color: var(--accent); }
+  .brand .sub {
+    font-family: "IBM Plex Mono", monospace; font-size: .7rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 2px 8px;
+  }
+  .top-spacer { flex: 1; }
+  .icon-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 12px; border-radius: 8px; text-decoration: none;
+    font-size: .82rem; font-weight: 500; color: var(--ink-2); border: 1px solid var(--border);
+  }
+  .icon-link:hover { color: var(--ink); border-color: var(--border-strong); }
+  .theme-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 8px;
+    background: transparent; border: 1px solid var(--border); color: var(--ink-2);
+  }
+  .theme-btn:hover { color: var(--ink); border-color: var(--border-strong); }
+  .theme-btn svg { width: 16px; height: 16px; }
+  @media (max-width: 430px) {
+    .top-inner { gap: 8px; }
+    .icon-link { padding: 8px; white-space: nowrap; }
+  }
+
+  .page-head { padding: 28px 0 6px; }
+  .page-head h1 { font-size: 1.6rem; font-weight: 800; }
+  .page-head p { margin: 8px 0 0; color: var(--ink-2); font-size: .9rem; max-width: 62ch; }
+
+  .demo-banner {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn); color: var(--warn);
+    border-radius: 10px; padding: 12px 14px; margin: 18px 0; font-size: .84rem;
+  }
+  .demo-banner svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+  .demo-banner strong { color: inherit; }
+
+  .stat-row { display: flex; gap: 22px; flex-wrap: wrap; margin: 20px 0 26px; }
+  .stat-row .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-row .n { font-family: "Archivo", sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .stat-row .l { font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+
+  .list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 60px; }
+  .sub-card {
+    display: flex; gap: 18px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+  }
+  .sub-photos { display: flex; gap: 6px; flex: none; }
+  .sub-photos .ph { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); flex: none; }
+  .sub-photos .ph svg { width: 100%; height: 100%; display: block; }
+  .sub-photos .more {
+    width: 64px; height: 64px; border-radius: 8px; border: 1px dashed var(--border-strong);
+    display: flex; align-items: center; justify-content: center; color: var(--ink-3); font-size: .78rem; font-weight: 600;
+  }
+  .sub-main { flex: 1; min-width: 0; }
+  .sub-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .sub-top h3 { font-size: 1.05rem; font-weight: 800; }
+  .badge {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 999px; flex: none;
+  }
+  .badge.neu { background: var(--info-bg); color: var(--info); }
+  .badge.kontaktiert { background: var(--warn-bg); color: var(--warn); }
+  .badge.erledigt { background: var(--ok-bg); color: var(--ok); }
+  .badge.abgelehnt { background: var(--surface-2); color: var(--ink-3); }
+  .sub-top .date { margin-left: auto; font-size: .76rem; color: var(--ink-3); font-family: "IBM Plex Mono", monospace; }
+  .sub-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .82rem; color: var(--ink-2); margin-bottom: 8px; }
+  .sub-meta b { color: var(--ink); font-weight: 600; }
+  .sub-notes { font-size: .86rem; color: var(--ink-2); margin-bottom: 8px; }
+  .sub-contact { font-size: .78rem; color: var(--ink-3); }
+  .sub-contact b { color: var(--ink-2); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .sub-card { flex-direction: column; }
+    .sub-photos { order: -1; }
+    .sub-top .date { margin-left: 0; width: 100%; order: 3; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="../index.html">
+      <span class="mark">SS<b>·</b>WHEELS</span>
+      <span class="sub">Admin</span>
+    </a>
+    <span class="top-spacer"></span>
+    <a class="icon-link" href="../index.html">Zum Shop</a>
+    <button class="theme-btn" id="themeBtn" aria-label="Farbschema wechseln" title="Hell / Dunkel">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Auto-Inserate</h1>
+    <p>Übersicht der über das Formular „Auto inserieren“ eingereichten Fahrzeuge.</p>
+  </div>
+
+  <div class="demo-banner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <div><strong>Demo-Ansicht mit Beispieldaten.</strong> Die Seite ist rein statisch (kein eigener Server) — echte Formular-Einreichungen kommen aktuell per E-Mail an <span class="mono">ss.wheels@outlook.com</span>, nicht automatisch hierher. Diese Liste zeigt nur, wie eine Admin-Übersicht aussehen könnte.</div>
+  </div>
+
+  <div class="stat-row" id="statRow"></div>
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+const SUBMISSIONS = [
+  {
+    brandModel: "Audi A4 Avant 2.0 TDI",
+    year: "2018", km: "63'000 km", mfk: "11/2026",
+    notes: "Erstbesitz, Nichtraucherfahrzeug, Preisvorstellung CHF 18'500.",
+    status: "neu", submitted: "2026-09-16", contact: "M. Kunz · m.kunz@example.com",
+    photos: 6, color: "#8d939a",
+  },
+  {
+    brandModel: "VW Golf 7 Comfortline",
+    year: "2016", km: "87'000 km", mfk: "09/2026",
+    notes: "Scheckheftgepflegt, Winterräder inklusive, Klimaautomatik.",
+    status: "neu", submitted: "2026-09-14", contact: "R. Steiner · 079 xxx xx xx",
+    photos: 4, color: "#3a6ea5",
+  },
+  {
+    brandModel: "BMW 320d Touring",
+    year: "2015", km: "142'000 km", mfk: "03/2027",
+    notes: "Vollausstattung, Anhängerkupplung, leichte Gebrauchsspuren am Stossfänger.",
+    status: "kontaktiert", submitted: "2026-09-12", contact: "P. Meier · p.meier@example.com",
+    photos: 8, color: "#22252b",
+  },
+  {
+    brandModel: "Skoda Octavia Combi RS",
+    year: "2019", km: "45'000 km", mfk: "06/2027",
+    notes: "Fast neuwertig, DSG-Getriebe, Herstellergarantie bis 2027.",
+    status: "erledigt", submitted: "2026-09-05", contact: "L. Frei · 076 xxx xx xx",
+    photos: 5, color: "#b7231f",
+  },
+  {
+    brandModel: "Mercedes-Benz C220d",
+    year: "2013", km: "178'000 km", mfk: "abgelaufen",
+    notes: "Motor läuft einwandfrei, kleine Beule an der Beifahrertür.",
+    status: "abgelehnt", submitted: "2026-09-08", contact: "T. Vogel · t.vogel@example.com",
+    photos: 3, color: "#5c6470",
+  },
+];
+
+const STATUS_LABEL = { neu: "Neu", kontaktiert: "Kontaktiert", erledigt: "Erledigt", abgelehnt: "Abgelehnt" };
+
+function carThumb(hex) {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#14161a"/>
+    <path d="M12 62 q4 -20 20 -23 l30 -3 q16 1 24 15 l10 2 q6 2 6 9 l0 6 -90 0 z" fill="${hex}"/>
+    <path d="M36 41 l24 -2 q11 0 18 10 l-52 1 q5 -8 10 -9 z" fill="#0c0d10" opacity=".5"/>
+    <circle cx="30" cy="66" r="9" fill="#0c0d10"/><circle cx="30" cy="66" r="4" fill="#c6cbd2"/>
+    <circle cx="74" cy="66" r="9" fill="#0c0d10"/><circle cx="74" cy="66" r="4" fill="#c6cbd2"/>
+  </svg>`;
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+document.getElementById("statRow").innerHTML = `
+  <div class="stat"><span class="n">${SUBMISSIONS.length}</span><span class="l">Einreichungen</span></div>
+  <div class="stat"><span class="n">${SUBMISSIONS.filter(s => s.status === "neu").length}</span><span class="l">Neu</span></div>
+  <div class="stat"><span class="n">${SUBMISSIONS.filter(s => s.status === "kontaktiert").length}</span><span class="l">Kontaktiert</span></div>
+  <div class="stat"><span class="n">${SUBMISSIONS.filter(s => s.status === "erledigt").length}</span><span class="l">Erledigt</span></div>`;
+
+document.getElementById("list").innerHTML = SUBMISSIONS.map(s => {
+  const shown = Math.min(s.photos, 3);
+  const thumbs = Array.from({ length: shown }, () => `<div class="ph">${carThumb(s.color)}</div>`).join("");
+  const more = s.photos > shown ? `<div class="more">+${s.photos - shown}</div>` : "";
+  return `
+  <div class="sub-card">
+    <div class="sub-photos">${thumbs}${more}</div>
+    <div class="sub-main">
+      <div class="sub-top">
+        <h3>${s.brandModel}</h3>
+        <span class="badge ${s.status}">${STATUS_LABEL[s.status]}</span>
+        <span class="date">Eingereicht am ${fmtDate(s.submitted)}</span>
+      </div>
+      <div class="sub-meta">
+        <span><b>Jahrgang:</b> ${s.year}</span>
+        <span><b>Kilometerstand:</b> ${s.km}</span>
+        <span><b>Letzte Prüfung:</b> ${s.mfk}</span>
+      </div>
+      <p class="sub-notes">${s.notes}</p>
+      <p class="sub-contact"><b>Kontakt:</b> ${s.contact}</p>
+    </div>
+  </div>`;
+}).join("");
+
+/* ---------- Theme toggle (gleich wie im Shop) ---------- */
+function applyTheme(mode) {
+  document.documentElement.setAttribute("data-theme", mode);
+  try { localStorage.setItem("ss-wheels-theme", mode); } catch (e) {}
+}
+(function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem("ss-wheels-theme"); } catch (e) {}
+  if (saved === "light" || saved === "dark") applyTheme(saved);
+})();
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme")
+    || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  applyTheme(current === "dark" ? "light" : "dark");
+});
+</script>
+
+</body>
+</html>
