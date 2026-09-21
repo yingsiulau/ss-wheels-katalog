@@ -334,14 +334,20 @@
         </label>
       </div>
 
-      <label class="field">
-        <span>Kontakt</span>
-        <input type="text" id="fContact" placeholder="Name · Telefon oder E-Mail" />
-      </label>
+      <div class="field-row two">
+        <label class="field">
+          <span>Kontakt</span>
+          <input type="text" id="fContact" placeholder="Name · Telefon oder E-Mail" />
+        </label>
+        <label class="field">
+          <span>Preisvorstellung</span>
+          <input type="text" id="fPrice" placeholder="z. B. CHF 18'500 oder VB" />
+        </label>
+      </div>
 
       <label class="field">
         <span>Bemerkungen</span>
-        <textarea id="fNotes" rows="4" placeholder="Zustand, Ausstattung, Preisvorstellung …"></textarea>
+        <textarea id="fNotes" rows="4" placeholder="Zustand, Ausstattung …"></textarea>
       </label>
 
       <div class="field">
@@ -507,6 +513,7 @@ async function loadAndRender() {
           <span><b>Jahrgang:</b> ${s.year}</span>
           <span><b>Kilometerstand:</b> ${s.km}</span>
           <span><b>Letzte Prüfung:</b> ${s.mfk || "–"}</span>
+          <span><b>Preisvorstellung:</b> ${s.price || "–"}</span>
         </div>
         <p class="sub-notes">${s.notes || "–"}</p>
         <p class="sub-contact"><b>Kontakt:</b> ${s.contact || "–"}</p>
@@ -629,6 +636,7 @@ function openForm(listing) {
   document.getElementById("fMfk").value = listing ? (listing.mfk || "") : "";
   document.getElementById("fStatus").value = listing ? listing.status : "neu";
   document.getElementById("fContact").value = listing ? (listing.contact || "") : "";
+  document.getElementById("fPrice").value = listing ? (listing.price || "") : "";
   document.getElementById("fNotes").value = listing ? (listing.notes || "") : "";
   formPhotos = listing && listing.photos ? listing.photos.slice() : [];
   renderFormPhotos();
@@ -666,6 +674,7 @@ document.getElementById("listingForm").addEventListener("submit", async e => {
     mfk: document.getElementById("fMfk").value.trim(),
     status: document.getElementById("fStatus").value,
     contact: document.getElementById("fContact").value.trim(),
+    price: document.getElementById("fPrice").value.trim(),
     notes: document.getElementById("fNotes").value.trim(),
     photos: formPhotos.slice(),
     submitted: existing ? existing.submitted : todayISO(),

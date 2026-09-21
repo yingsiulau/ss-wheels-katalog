@@ -585,14 +585,20 @@
         </label>
       </div>
 
-      <label class="field">
-        <span>Letzte Prüfung (MFK)</span>
-        <input type="text" id="sellMfk" placeholder="z. B. 03/2027 oder unbekannt" />
-      </label>
+      <div class="field-row two">
+        <label class="field">
+          <span>Letzte Prüfung (MFK)</span>
+          <input type="text" id="sellMfk" placeholder="z. B. 03/2027 oder unbekannt" />
+        </label>
+        <label class="field">
+          <span>Preisvorstellung</span>
+          <input type="text" id="sellPrice" placeholder="z. B. CHF 18'500 oder VB" />
+        </label>
+      </div>
 
       <label class="field">
         <span>Bemerkungen</span>
-        <textarea id="sellNotes" rows="4" placeholder="Zustand, Ausstattung, Unfallfreiheit, Preisvorstellung …"></textarea>
+        <textarea id="sellNotes" rows="4" placeholder="Zustand, Ausstattung, Unfallfreiheit …"></textarea>
       </label>
 
       <div class="field">
@@ -1152,6 +1158,7 @@ document.getElementById("sellForm").addEventListener("submit", async e => {
   const year = document.getElementById("sellYear").value.trim();
   const km = document.getElementById("sellKm").value.trim();
   const mfk = document.getElementById("sellMfk").value.trim();
+  const price = document.getElementById("sellPrice").value.trim();
   const notes = document.getElementById("sellNotes").value.trim();
   if (!brandModel || !year || !km) {
     e.target.reportValidity();
@@ -1159,7 +1166,7 @@ document.getElementById("sellForm").addEventListener("submit", async e => {
   }
   const record = {
     id: Date.now(),
-    brandModel, year, km, mfk,
+    brandModel, year, km, mfk, price,
     notes,
     status: "neu",
     contact: "",
