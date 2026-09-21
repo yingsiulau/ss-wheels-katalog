@@ -604,11 +604,11 @@
         </label>
         <div class="upload-grid" id="uploadGrid"></div>
         <p class="upload-hint" id="uploadCount"></p>
-        <p class="upload-hint">Die Fotos werden hier nur ausgewählt und angezeigt, nicht automatisch hochgeladen — bitte im geöffneten E-Mail-Entwurf manuell anhängen, bevor du sendest.</p>
+        <p class="upload-hint">Die Fotos werden zusammen mit dem Inserat in diesem Browser gespeichert.</p>
       </div>
 
       <div class="m-actions">
-        <button type="submit" class="btn btn-primary">Per E-Mail senden</button>
+        <button type="submit" class="btn btn-primary">Inserat erstellen</button>
         <a class="btn btn-ghost" id="sellIgLink" target="_blank" rel="noopener">Lieber per Instagram-DM</a>
       </div>
     </form>
@@ -1062,6 +1062,29 @@ document.getElementById("lightbox").addEventListener("click", closeLightbox);
 document.getElementById("lightboxClose").addEventListener("click", e => { e.stopPropagation(); closeLightbox(); });
 
 /* ---------- Auto-Verkaufsformular ---------- */
+const LISTINGS_DB_NAME = "ss-wheels-admin";
+const LISTINGS_STORE = "listings";
+function listingsDbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(LISTINGS_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(LISTINGS_STORE)) db.createObjectStore(LISTINGS_STORE, { keyPath: "id" });
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function listingsDbPut(record) {
+  const db = await listingsDbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(LISTINGS_STORE, "readwrite");
+    tx.objectStore(LISTINGS_STORE).put(record);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 let sellPhotoFiles = [];
 let sellLastFocus = null;
 
@@ -1123,7 +1146,7 @@ document.getElementById("sellBackdrop").addEventListener("click", e => {
 });
 document.getElementById("sellIgLink").href = SHOP.instagram;
 
-document.getElementById("sellForm").addEventListener("submit", e => {
+document.getElementById("sellForm").addEventListener("submit", async e => {
   e.preventDefault();
   const brandModel = document.getElementById("sellBrandModel").value.trim();
   const year = document.getElementById("sellYear").value.trim();
@@ -1134,20 +1157,29 @@ document.getElementById("sellForm").addEventListener("submit", e => {
     e.target.reportValidity();
     return;
   }
-  const lines = [
-    `Marke / Modell: ${brandModel}`,
-    `Jahrgang: ${year}`,
-    `Kilometerstand: ${km}`,
-    `Letzte Prüfung (MFK): ${mfk || "–"}`,
-    `Bemerkungen: ${notes || "–"}`,
-    "",
-    sellPhotoFiles.length
-      ? `Fotos (${sellPhotoFiles.length}) bitte manuell anhängen: ${sellPhotoFiles.map(f => f.name).join(", ")}`
-      : "Keine Fotos ausgewählt.",
-  ];
-  const subject = `Auto-Inserat: ${brandModel}`;
-  const body = lines.join("\n");
-  window.location.href = `mailto:${SHOP.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const record = {
+    id: Date.now(),
+    brandModel, year, km, mfk,
+    notes,
+    status: "neu",
+    contact: "",
+    photos: sellPhotoFiles.slice(),
+    submitted: new Date().toISOString().slice(0, 10),
+  };
+  await listingsDbPut(record);
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = "✓ Inserat erstellt";
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.disabled = false;
+    closeSellForm();
+    e.target.reset();
+    sellPhotoFiles = [];
+    renderSellPhotos();
+  }, 1200);
 });
 
 document.addEventListener("keydown", e => {
