@@ -612,7 +612,6 @@ document.getElementById("fPhotos").addEventListener("change", e => {
   e.target.value = "";
 });
 const fUploadZone = document.getElementById("fUploadZone");
-fUploadZone.addEventListener("click", e => { e.preventDefault(); document.getElementById("fPhotos").click(); });
 fUploadZone.addEventListener("dragover", e => { e.preventDefault(); fUploadZone.classList.add("drag"); });
 fUploadZone.addEventListener("dragleave", () => fUploadZone.classList.remove("drag"));
 fUploadZone.addEventListener("drop", e => {

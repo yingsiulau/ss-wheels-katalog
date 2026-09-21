@@ -1097,7 +1097,6 @@ document.getElementById("sellPhotos").addEventListener("change", e => {
 });
 
 const uploadZone = document.getElementById("uploadZone");
-uploadZone.addEventListener("click", e => { e.preventDefault(); document.getElementById("sellPhotos").click(); });
 uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("drag"); });
 uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag"));
 uploadZone.addEventListener("drop", e => {
