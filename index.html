@@ -377,11 +377,11 @@
   .sell-intro { font-size: .86rem; color: var(--ink-2); margin-top: -8px; }
   .field { display: flex; flex-direction: column; gap: 6px; font-size: .84rem; color: var(--ink-2); }
   .field > span { font-weight: 600; color: var(--ink); }
-  .field input[type="text"], .field textarea {
+  .field input[type="text"], .field textarea, .field select {
     font: inherit; font-size: .9rem; color: var(--ink); background: var(--surface-2);
     border: 1px solid var(--border-strong); border-radius: 9px; padding: 10px 12px; width: 100%;
   }
-  .field input[type="text"]:focus, .field textarea:focus {
+  .field input[type="text"]:focus, .field textarea:focus, .field select:focus {
     outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 31, 38, .18);
   }
   .field textarea { resize: vertical; min-height: 80px; }
@@ -593,6 +593,20 @@
         <label class="field">
           <span>Preisvorstellung</span>
           <input type="text" id="sellPrice" placeholder="z. B. CHF 18'500 oder VB" />
+        </label>
+      </div>
+
+      <div class="field-row two">
+        <label class="field">
+          <span>Getriebe</span>
+          <select id="sellGetriebe">
+            <option value="Manuell">Manuell</option>
+            <option value="Automat">Automat</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Kontakt (E-Mail oder Telefon) *</span>
+          <input type="text" id="sellContact" required placeholder="z. B. max@beispiel.ch oder 079 123 45 67" />
         </label>
       </div>
 
@@ -1159,17 +1173,19 @@ document.getElementById("sellForm").addEventListener("submit", async e => {
   const km = document.getElementById("sellKm").value.trim();
   const mfk = document.getElementById("sellMfk").value.trim();
   const price = document.getElementById("sellPrice").value.trim();
+  const getriebe = document.getElementById("sellGetriebe").value;
+  const contact = document.getElementById("sellContact").value.trim();
   const notes = document.getElementById("sellNotes").value.trim();
-  if (!brandModel || !year || !km) {
+  if (!brandModel || !year || !km || !contact) {
     e.target.reportValidity();
     return;
   }
   const record = {
     id: Date.now(),
-    brandModel, year, km, mfk, price,
+    brandModel, year, km, mfk, price, getriebe,
     notes,
     status: "neu",
-    contact: "",
+    contact,
     photos: sellPhotoFiles.slice(),
     submitted: new Date().toISOString().slice(0, 10),
   };
