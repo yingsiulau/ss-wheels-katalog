@@ -289,7 +289,7 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    <div><strong>Lokale Verwaltung.</strong> Einträge werden in diesem Browser gespeichert (IndexedDB). Über das „Auto inserieren"-Formular auf der Hauptseite eingereichte Inserate erscheinen hier automatisch — allerdings nur, wenn sie im selben Browser auf diesem Gerät eingereicht wurden. Reicht ein Kunde von seinem eigenen Handy/PC ein, landet das (noch) nicht hier. Für solche Fälle hier manuell „Neues Inserat" anlegen.</div>
+    <div><strong>Geräteübergreifend synchronisiert.</strong> Über das „Auto inserieren"-Formular eingereichte Inserate erscheinen hier automatisch — egal von welchem Gerät sie eingereicht wurden. Für Kundenaufträge per Telefon/E-Mail hier manuell „Neues Inserat" anlegen.</div>
   </div>
 
   <div class="stat-row" id="statRow"></div>
@@ -385,116 +385,95 @@
   <span class="lightbox-count" id="lightboxCount"></span>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script>
-/* ---------- IndexedDB ---------- */
-const DB_NAME = "ss-wheels-admin";
-const DB_VERSION = 1;
-const STORE = "listings";
+const firebaseConfig = {
+  apiKey: "AIzaSyBRwx70TBgfrlROPkiL7Ou6c9w09yuBlig",
+  authDomain: "sswheels-felgenshop.firebaseapp.com",
+  projectId: "sswheels-felgenshop",
+  storageBucket: "sswheels-felgenshop.firebasestorage.app",
+  messagingSenderId: "108933713615",
+  appId: "1:108933713615:web:3526173f6390632c7b71ba",
+  measurementId: "G-6DTJ309JVY",
+};
+firebase.initializeApp(firebaseConfig);
+const listingsDb = firebase.firestore();
 
-function idbOpen() {
+function compressImageToDataUrl(file, maxDim = 640, quality = 0.55) {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "id" });
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => {
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > maxDim) {
+          height = Math.round(height * (maxDim / width));
+          width = maxDim;
+        } else if (height >= width && height > maxDim) {
+          width = Math.round(width * (maxDim / height));
+          height = maxDim;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
 }
-async function idbGetAll() {
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const req = db.transaction(STORE, "readonly").objectStore(STORE).getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
+</script>
+<script>
+/* ---------- Firestore ---------- */
+async function firestoreGetAllListings() {
+  const snap = await listingsDb.collection("listings").get();
+  return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
-async function idbPut(record) {
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).put(record);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
+async function firestoreSaveListing(id, data) {
+  if (id) {
+    await listingsDb.collection("listings").doc(id).set(data);
+    return id;
+  }
+  const ref = await listingsDb.collection("listings").add(data);
+  return ref.id;
 }
-async function idbDelete(id) {
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).delete(id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
+async function firestoreDeleteListing(id) {
+  await listingsDb.collection("listings").doc(id).delete();
+}
+async function uploadNewPhotos(files) {
+  const urls = [];
+  for (const file of files) {
+    urls.push(await compressImageToDataUrl(file));
+  }
+  return urls;
 }
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
-const SEED = [
-  { id: 1, brandModel: "Audi A4 Avant 2.0 TDI", year: "2018", km: "63'000 km", mfk: "11/2026",
-    notes: "Erstbesitz, Nichtraucherfahrzeug, Preisvorstellung CHF 18'500.",
-    status: "neu", submitted: "2026-09-16", contact: "M. Kunz · m.kunz@example.com",
-    photos: [], seedCount: 6, seedColor: "#8d939a" },
-  { id: 2, brandModel: "VW Golf 7 Comfortline", year: "2016", km: "87'000 km", mfk: "09/2026",
-    notes: "Scheckheftgepflegt, Winterräder inklusive, Klimaautomatik.",
-    status: "neu", submitted: "2026-09-14", contact: "R. Steiner · 079 xxx xx xx",
-    photos: [], seedCount: 4, seedColor: "#3a6ea5" },
-  { id: 3, brandModel: "BMW 320d Touring", year: "2015", km: "142'000 km", mfk: "03/2027",
-    notes: "Vollausstattung, Anhängerkupplung, leichte Gebrauchsspuren am Stossfänger.",
-    status: "kontaktiert", submitted: "2026-09-12", contact: "P. Meier · p.meier@example.com",
-    photos: [], seedCount: 8, seedColor: "#22252b" },
-  { id: 4, brandModel: "Skoda Octavia Combi RS", year: "2019", km: "45'000 km", mfk: "06/2027",
-    notes: "Fast neuwertig, DSG-Getriebe, Herstellergarantie bis 2027.",
-    status: "erledigt", submitted: "2026-09-05", contact: "L. Frei · 076 xxx xx xx",
-    photos: [], seedCount: 5, seedColor: "#b7231f" },
-  { id: 5, brandModel: "Mercedes-Benz C220d", year: "2013", km: "178'000 km", mfk: "abgelaufen",
-    notes: "Motor läuft einwandfrei, kleine Beule an der Beifahrertür.",
-    status: "abgelehnt", submitted: "2026-09-08", contact: "T. Vogel · t.vogel@example.com",
-    photos: [], seedCount: 3, seedColor: "#5c6470" },
-];
-
 const STATUS_LABEL = { neu: "Neu", kontaktiert: "Kontaktiert", erledigt: "Erledigt", abgelehnt: "Abgelehnt" };
 
-function carThumb(hex) {
-  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100" height="100" fill="#14161a"/>
-    <path d="M12 62 q4 -20 20 -23 l30 -3 q16 1 24 15 l10 2 q6 2 6 9 l0 6 -90 0 z" fill="${hex}"/>
-    <path d="M36 41 l24 -2 q11 0 18 10 l-52 1 q5 -8 10 -9 z" fill="#0c0d10" opacity=".5"/>
-    <circle cx="30" cy="66" r="9" fill="#0c0d10"/><circle cx="30" cy="66" r="4" fill="#c6cbd2"/>
-    <circle cx="74" cy="66" r="9" fill="#0c0d10"/><circle cx="74" cy="66" r="4" fill="#c6cbd2"/>
-  </svg>`;
-}
 function fmtDate(iso) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 function photoThumbsHTML(listing) {
-  const real = listing.photos || [];
-  if (real.length) {
-    const shown = real.slice(0, 3);
-    const thumbs = shown.map((blob, i) => `<button type="button" class="ph" data-listing="${listing.id}" data-index="${i}"><img src="${URL.createObjectURL(blob)}" alt="" /></button>`).join("");
-    const more = real.length > 3 ? `<button type="button" class="more" data-listing="${listing.id}" data-index="3">+${real.length - 3}</button>` : "";
-    return thumbs + more;
-  }
-  if (listing.seedCount) {
-    const shown = Math.min(listing.seedCount, 3);
-    const thumbs = Array.from({ length: shown }, () => `<div class="ph">${carThumb(listing.seedColor || "#8d939a")}</div>`).join("");
-    const more = listing.seedCount > shown ? `<div class="more">+${listing.seedCount - shown}</div>` : "";
-    return thumbs + more;
-  }
-  return `<div class="ph empty">Keine Fotos</div>`;
+  const urls = listing.photoUrls || [];
+  if (!urls.length) return `<div class="ph empty">Keine Fotos</div>`;
+  const shown = urls.slice(0, 3);
+  const thumbs = shown.map((url, i) => `<button type="button" class="ph" data-listing="${listing.id}" data-index="${i}"><img src="${url}" alt="" loading="lazy" /></button>`).join("");
+  const more = urls.length > 3 ? `<button type="button" class="more" data-listing="${listing.id}" data-index="3">+${urls.length - 3}</button>` : "";
+  return thumbs + more;
 }
 
 let listingsById = new Map();
 
-async function loadAndRender() {
-  let all = await idbGetAll();
-  if (all.length === 0) {
-    for (const seed of SEED) await idbPut(seed);
-    all = await idbGetAll();
-  }
-  all.sort((a, b) => (b.submitted || "").localeCompare(a.submitted || "") || b.id - a.id);
+function renderListings(all) {
+  all.sort((a, b) => (b.submitted || "").localeCompare(a.submitted || ""));
   listingsById = new Map(all.map(l => [l.id, l]));
 
   document.getElementById("statRow").innerHTML = `
@@ -539,21 +518,21 @@ document.getElementById("list").addEventListener("click", async e => {
   const delBtn = e.target.closest("[data-delete]");
   const photoBtn = e.target.closest("[data-listing]");
   if (editBtn) {
-    const listing = listingsById.get(Number(editBtn.dataset.edit));
+    const listing = listingsById.get(editBtn.dataset.edit);
     if (listing) openForm(listing);
   }
   if (delBtn) {
-    const id = Number(delBtn.dataset.delete);
+    const id = delBtn.dataset.delete;
     const listing = listingsById.get(id);
     if (listing && confirm(`„${listing.brandModel}" wirklich löschen?`)) {
-      await idbDelete(id);
-      await loadAndRender();
+      delBtn.disabled = true;
+      await firestoreDeleteListing(id);
     }
   }
   if (photoBtn) {
-    const listing = listingsById.get(Number(photoBtn.dataset.listing));
-    if (listing && listing.photos && listing.photos.length) {
-      openLightbox(listing.photos, Number(photoBtn.dataset.index));
+    const listing = listingsById.get(photoBtn.dataset.listing);
+    if (listing && listing.photoUrls && listing.photoUrls.length) {
+      openLightbox(listing.photoUrls, Number(photoBtn.dataset.index));
     }
   }
 });
@@ -562,8 +541,7 @@ document.getElementById("list").addEventListener("click", async e => {
 let lightboxPhotos = [];
 let lightboxIndex = 0;
 function showLightboxPhoto() {
-  const blob = lightboxPhotos[lightboxIndex];
-  document.getElementById("lightboxImg").src = URL.createObjectURL(blob);
+  document.getElementById("lightboxImg").src = lightboxPhotos[lightboxIndex];
   document.getElementById("lightboxCount").textContent =
     lightboxPhotos.length > 1 ? `${lightboxIndex + 1} / ${lightboxPhotos.length}` : "";
   const multi = lightboxPhotos.length > 1;
@@ -603,9 +581,9 @@ let formPhotos = [];
 
 function renderFormPhotos() {
   const grid = document.getElementById("fUploadGrid");
-  grid.innerHTML = formPhotos.map((blob, i) => `
+  grid.innerHTML = formPhotos.map((item, i) => `
     <div class="thumb">
-      <img src="${URL.createObjectURL(blob)}" alt="" />
+      <img src="${typeof item === "string" ? item : URL.createObjectURL(item)}" alt="" />
       <button type="button" data-i="${i}" aria-label="Entfernen">×</button>
     </div>`).join("");
   grid.querySelectorAll("button[data-i]").forEach(btn => {
@@ -648,7 +626,7 @@ function openForm(listing) {
   document.getElementById("fPrice").value = listing ? (listing.price || "") : "";
   document.getElementById("fGetriebe").value = listing ? (listing.getriebe || "Manuell") : "Manuell";
   document.getElementById("fNotes").value = listing ? (listing.notes || "") : "";
-  formPhotos = listing && listing.photos ? listing.photos.slice() : [];
+  formPhotos = listing && listing.photoUrls ? listing.photoUrls.slice() : [];
   renderFormPhotos();
   document.getElementById("formBackdrop").hidden = false;
   document.body.style.overflow = "hidden";
@@ -678,24 +656,45 @@ document.getElementById("listingForm").addEventListener("submit", async e => {
   const km = document.getElementById("fKm").value.trim();
   if (!brandModel || !year || !km) { e.target.reportValidity(); return; }
   const existing = editingId ? listingsById.get(editingId) : null;
-  const record = {
-    id: editingId || Date.now(),
-    brandModel, year, km,
-    mfk: document.getElementById("fMfk").value.trim(),
-    status: document.getElementById("fStatus").value,
-    contact: document.getElementById("fContact").value.trim(),
-    price: document.getElementById("fPrice").value.trim(),
-    getriebe: document.getElementById("fGetriebe").value,
-    notes: document.getElementById("fNotes").value.trim(),
-    photos: formPhotos.slice(),
-    submitted: existing ? existing.submitted : todayISO(),
-  };
-  await idbPut(record);
-  closeForm();
-  await loadAndRender();
+
+  const saveBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = "Wird gespeichert …";
+  saveBtn.disabled = true;
+  try {
+    const existingUrls = formPhotos.filter(p => typeof p === "string");
+    const newFiles = formPhotos.filter(p => typeof p !== "string");
+    const uploadedUrls = newFiles.length ? await uploadNewPhotos(newFiles) : [];
+    const record = {
+      brandModel, year, km,
+      mfk: document.getElementById("fMfk").value.trim(),
+      status: document.getElementById("fStatus").value,
+      contact: document.getElementById("fContact").value.trim(),
+      price: document.getElementById("fPrice").value.trim(),
+      getriebe: document.getElementById("fGetriebe").value,
+      notes: document.getElementById("fNotes").value.trim(),
+      photoUrls: existingUrls.concat(uploadedUrls),
+      submitted: existing ? existing.submitted : todayISO(),
+    };
+    await firestoreSaveListing(editingId, record);
+    closeForm();
+  } catch (err) {
+    console.error(err);
+    alert("Inserat konnte nicht gespeichert werden. Bitte versuche es erneut.");
+  } finally {
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+  }
 });
 
-loadAndRender();
+/* ---------- Live-Sync mit Firestore ---------- */
+listingsDb.collection("listings").onSnapshot(snap => {
+  const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  renderListings(all);
+}, err => {
+  console.error(err);
+  document.getElementById("list").innerHTML = `<div class="empty-state">Fehler beim Laden der Inserate. Bitte Seite neu laden.</div>`;
+});
 
 /* ---------- Theme toggle (gleich wie im Shop) ---------- */
 function applyTheme(mode) {
