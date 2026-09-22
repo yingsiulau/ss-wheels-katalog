@@ -257,9 +257,41 @@
     .modal { border-radius: 0; max-width: none; min-height: 100%; }
     .form-body { max-height: none; overflow-y: visible; }
   }
+
+  #authGate {
+    position: fixed; inset: 0; z-index: 999; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  #authGate[hidden] { display: none; }
+  .auth-card {
+    width: 100%; max-width: 340px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 26px; box-shadow: var(--shadow); text-align: center;
+  }
+  .auth-card h1 { font-size: 1.15rem; margin-bottom: 6px; }
+  .auth-card p.sub { font-size: .82rem; color: var(--ink-2); margin-bottom: 18px; }
+  .auth-card input[type="password"] {
+    font: inherit; font-size: .95rem; color: var(--ink); background: var(--surface-2);
+    border: 1px solid var(--border-strong); border-radius: 9px; padding: 10px 12px; width: 100%;
+    text-align: center; margin-bottom: 12px;
+  }
+  .auth-card input[type="password"]:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 31, 38, .18);
+  }
+  .auth-card button { width: 100%; justify-content: center; }
+  .auth-error { font-size: .82rem; color: var(--accent); margin-top: 10px; min-height: 1.2em; }
 </style>
 </head>
 <body>
+
+<div id="authGate">
+  <form class="auth-card" id="authForm">
+    <h1>SS Wheels Admin</h1>
+    <p class="sub">Bitte Passwort eingeben</p>
+    <input type="password" id="authPw" autocomplete="current-password" autofocus />
+    <button type="submit" class="btn btn-primary">Anmelden</button>
+    <p class="auth-error" id="authError"></p>
+  </form>
+</div>
 
 <header class="top">
   <div class="wrap top-inner">
@@ -687,13 +719,86 @@ document.getElementById("listingForm").addEventListener("submit", async e => {
   }
 });
 
-/* ---------- Live-Sync mit Firestore ---------- */
-listingsDb.collection("listings").onSnapshot(snap => {
-  const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  renderListings(all);
-}, err => {
-  console.error(err);
-  document.getElementById("list").innerHTML = `<div class="empty-state">Fehler beim Laden der Inserate. Bitte Seite neu laden.</div>`;
+/* ---------- Live-Sync mit Firestore (erst nach Login) ---------- */
+let listingsSyncStarted = false;
+function startListingsSync() {
+  if (listingsSyncStarted) return;
+  listingsSyncStarted = true;
+  listingsDb.collection("listings").onSnapshot(snap => {
+    const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderListings(all);
+  }, err => {
+    console.error(err);
+    document.getElementById("list").innerHTML = `<div class="empty-state">Fehler beim Laden der Inserate. Bitte Seite neu laden.</div>`;
+  });
+}
+
+/* ---------- Login-Schutz ---------- */
+const ADMIN_PW_HASH = "8c8fc241cd95534e331266f6f00cff51ec4e5f69e00fc161d21eba0604f10212";
+const AUTH_KEY = "ss-wheels-admin-authed";
+const FAIL_KEY = "ss-wheels-admin-fails";
+const LOCKOUT_KEY = "ss-wheels-admin-lockout-until";
+const MAX_FAILS = 5;
+const LOCKOUT_MS = 5 * 60 * 1000;
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function getFailCount() { return parseInt(localStorage.getItem(FAIL_KEY) || "0", 10); }
+function getLockoutUntil() { return parseInt(localStorage.getItem(LOCKOUT_KEY) || "0", 10); }
+
+function updateAuthErrorForLockout() {
+  const remainingMs = getLockoutUntil() - Date.now();
+  const authPw = document.getElementById("authPw");
+  const authError = document.getElementById("authError");
+  if (remainingMs > 0) {
+    authPw.disabled = true;
+    const mins = Math.floor(remainingMs / 60000);
+    const secs = Math.floor((remainingMs % 60000) / 1000);
+    authError.textContent = `Zu viele Fehlversuche. Bitte warte ${mins}:${String(secs).padStart(2, "0")}.`;
+    setTimeout(updateAuthErrorForLockout, 1000);
+  } else {
+    authPw.disabled = false;
+    if (getFailCount() >= MAX_FAILS) {
+      localStorage.setItem(FAIL_KEY, "0");
+      authError.textContent = "";
+    }
+  }
+}
+
+function unlockAdmin() {
+  document.getElementById("authGate").hidden = true;
+  startListingsSync();
+}
+
+if (localStorage.getItem(AUTH_KEY) === "1") {
+  unlockAdmin();
+} else if (getLockoutUntil() > Date.now()) {
+  updateAuthErrorForLockout();
+}
+
+document.getElementById("authForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (getLockoutUntil() > Date.now()) return;
+  const entered = document.getElementById("authPw").value;
+  const hash = await sha256Hex(entered);
+  if (hash === ADMIN_PW_HASH) {
+    localStorage.setItem(AUTH_KEY, "1");
+    localStorage.setItem(FAIL_KEY, "0");
+    unlockAdmin();
+  } else {
+    const fails = getFailCount() + 1;
+    localStorage.setItem(FAIL_KEY, String(fails));
+    document.getElementById("authPw").value = "";
+    if (fails >= MAX_FAILS) {
+      localStorage.setItem(LOCKOUT_KEY, String(Date.now() + LOCKOUT_MS));
+      updateAuthErrorForLockout();
+    } else {
+      document.getElementById("authError").textContent = `Falsches Passwort. Noch ${MAX_FAILS - fails} Versuche.`;
+    }
+  }
 });
 
 /* ---------- Theme toggle (gleich wie im Shop) ---------- */
