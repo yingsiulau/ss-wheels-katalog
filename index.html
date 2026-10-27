@@ -285,6 +285,7 @@
     overflow: hidden; display: flex; flex-direction: column; text-align: left;
     box-shadow: var(--shadow); transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
     padding: 0; color: inherit;
+    width: 100%; min-width: 0; font: inherit; -webkit-appearance: none; appearance: none;
   }
   .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--border-strong); }
   .card .media { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); overflow: hidden; }
@@ -306,7 +307,7 @@
     padding: 3px 7px; border-radius: 5px;
     background: color-mix(in srgb, var(--ink) 70%, transparent); color: var(--bg);
   }
-  .card .body { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .card .body { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 9px; flex: 1; width: 100%; min-width: 0; box-sizing: border-box; }
   .card h3 { font-size: 1rem; font-weight: 700; line-height: 1.25; }
   .chips { display: flex; flex-wrap: wrap; gap: 5px; }
   .chip {
@@ -314,10 +315,10 @@
     background: var(--surface-2); border: 1px solid var(--border);
     padding: 2px 6px; border-radius: 5px; white-space: nowrap;
   }
-  .card .foot { margin-top: auto; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 4px; }
+  .card .foot { margin-top: auto; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 4px; width: 100%; }
   .price { font-family: "Archivo", sans-serif; font-weight: 800; font-size: 1.08rem; color: var(--ink); font-variant-numeric: tabular-nums; }
   .price.request { font-size: .8rem; font-weight: 600; color: var(--ink-2); font-family: "IBM Plex Sans", sans-serif; }
-  .card .detail-hint { font-size: .74rem; color: var(--accent); font-weight: 600; }
+  .card .detail-hint { font-size: .74rem; color: var(--accent); font-weight: 600; margin-left: auto; flex: none; white-space: nowrap; text-align: right; }
 
   .empty { border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 46px 24px; text-align: center; color: var(--ink-2); }
   .empty h3 { font-size: 1.05rem; margin-bottom: 6px; color: var(--ink); }
